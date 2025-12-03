@@ -1,34 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react'
+import { supabase } from './lib/supabase'
+import HomePage from './components/HomePage'
+import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('home')
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSignIn = () => {
+    setCurrentPage('signin')
+  }
+
+  const handleSignUp = () => {
+    setCurrentPage('signup')
+  }
+
+  const handleBack = () => {
+    setCurrentPage('home')
+  }
+
+  const handleLoginSuccess = (user) => {
+    setUser(user)
+    setCurrentPage('home')
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+    setCurrentPage('home')
+  }
+
+  if (currentPage === 'signin') {
+    return (
+      <SignIn 
+        onBack={handleBack} 
+        onSwitchToSignUp={() => setCurrentPage('signup')}
+        onLoginSuccess={handleLoginSuccess}
+      />
+    )
+  }
+
+  if (currentPage === 'signup') {
+    return (
+      <SignUp 
+        onBack={handleBack} 
+        onSwitchToSignIn={() => setCurrentPage('signin')} 
+      />
+    )
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <HomePage 
+      onSignIn={handleSignIn} 
+      onSignUp={handleSignUp}
+      user={user}
+      onLogout={handleLogout}
+    />
   )
 }
 
