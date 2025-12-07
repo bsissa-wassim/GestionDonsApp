@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css";
+import DonationModal from '../components/DonationModal';
 
-const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
+
+const HomePage = ({ onSignIn, onSignUp, user, onLogout, onDonate }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [counters, setCounters] = useState({ donations: 0, families: 0, volunteers: 0 });
   const [countersStarted, setCountersStarted] = useState(false);
-  
+  const [showDonation, setShowDonation] = useState(false);
+
+
   const slideCount = 3;
 
+  // Scroll header
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -19,20 +24,24 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Animation au scroll
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          if (entry.target.id === "stats" && !countersStarted) {
-            setCountersStarted(true);
-            animateCounters();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            if (entry.target.id === "stats" && !countersStarted) {
+              setCountersStarted(true);
+              animateCounters();
+            }
           }
-        }
-      });
-    }, { threshold: 0.2 });
+        });
+      },
+      { threshold: 0.2 }
+    );
 
-    document.querySelectorAll(".animate-on-scroll").forEach(el => observer.observe(el));
+    document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [countersStarted]);
 
@@ -41,19 +50,20 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
     const duration = 2000;
     const steps = 50;
     let step = 0;
-    
+
     const timer = setInterval(() => {
       step++;
       const progress = 1 - Math.pow(1 - step / steps, 3);
       setCounters({
         donations: Math.round(targets.donations * progress),
         families: Math.round(targets.families * progress),
-        volunteers: Math.round(targets.volunteers * progress)
+        volunteers: Math.round(targets.volunteers * progress),
       });
       if (step >= steps) clearInterval(timer);
     }, duration / steps);
   };
 
+  // Slider auto
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slideCount);
@@ -64,13 +74,16 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
   const slides = [
     { image: "/enfant.webp", title: "Offrir un avenir aux enfants", desc: "Soutien éducatif pour 30 enfants." },
     { image: "/catastrohe.jpg", title: "Aide d'urgence", desc: "Assistance aux victimes de catastrophes." },
-    { image: "/pauvre.jpg", title: "Un foyer pour chaque famille", desc: "Équipements pour les familles." }
+    { image: "/pauvre.jpg", title: "Un foyer pour chaque famille", desc: "Équipements pour les familles." },
   ];
 
   return (
     <div className="app">
+      {/* HEADER */}
       <header className={`header ${headerScrolled ? "scrolled" : ""}`}>
-        <a href="#" className="logo"><img src="/logo - Copy.png" alt="Donarise" /></a>
+        <a href="#" className="logo">
+          <img src="/logo - Copy.png" alt="Donarise" />
+        </a>
         <nav className="nav-center">
           <a href="#about">À propos</a>
           <a href="#values">Valeurs</a>
@@ -79,18 +92,33 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
         <div className="nav-actions">
           {user ? (
             <>
-              <span className="user-name">Bonjour, {user.user_metadata?.first_name || user.email.split('@')[0]}</span>
-              <button className="btn-outline" onClick={onLogout}>Déconnexion</button>
+              <span className="user-name">
+                Bonjour, {user.user_metadata?.first_name || user.email.split("@")[0]}
+              </span>
+              <button className="btn-outline" onClick={onLogout}>
+                Déconnexion
+              </button>
+              <button onClick={() => setShowDonation(true)} className="btn-primary">Faire un don</button>
+
             </>
           ) : (
             <>
-              {onSignIn && <button className="btn-outline" onClick={onSignIn}>Connexion</button>}
-              {onSignUp && <button className="btn-primary" onClick={onSignUp}>S'inscrire</button>}
+              {onSignIn && (
+                <button className="btn-outline" onClick={onSignIn}>
+                  Connexion
+                </button>
+              )}
+              {onSignUp && (
+                <button className="btn-primary" onClick={onSignUp}>
+                  S'inscrire
+                </button>
+              )}
             </>
           )}
         </div>
       </header>
 
+      {/* TOUTES TES SECTIONS EXISTANTES (hero, stats, about, values, impact, cta, footer) */}
       <section className="hero">
         <div className="hero-bg" style={{ backgroundImage: "url(/heroo.jpg)" }}></div>
         <div className="hero-content">
@@ -118,8 +146,10 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
       </section>
 
       <section className="values animate-on-scroll" id="values">
-        <div className="values-header"><span className="label">Ce qui nous guide</span><h2>Nos valeurs</h2></div>
-        <div className="values-grid">
+<div className="values-header">
+  <span className="label">Ce qui nous guide</span>
+  <h2>Nos valeurs</h2>
+</div>        <div className="values-grid">
           <div className="value-card"><div className="value-icon"></div><h3>Solidarité</h3><p>S'unir pour aider.</p></div>
           <div className="value-card"><div className="value-icon"></div><h3>Transparence</h3><p>Chaque don est tracé.</p></div>
           <div className="value-card"><div className="value-icon"></div><h3>Engagement</h3><p>Actions durables.</p></div>
@@ -139,7 +169,9 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
             ))}
           </div>
           <div className="slider-nav">
-            {slides.map((_, i) => (<button key={i} className={`dot ${currentSlide === i ? "active" : ""}`} onClick={() => setCurrentSlide(i)} />))}
+            {slides.map((_, i) => (
+              <button key={i} className={`dot ${currentSlide === i ? "active" : ""}`} onClick={() => setCurrentSlide(i)} />
+            ))}
           </div>
         </div>
       </section>
@@ -155,12 +187,19 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
           <div className="footer-brand"><img src="/logo - Copy.png" alt="Donarise" /><p>Solidarité, transparence, impact.</p></div>
           <div className="footer-links"><h4>Navigation</h4><a href="#about">À propos</a><a href="#values">Valeurs</a><a href="#impact">Impact</a></div>
           <div className="footer-contact"><h4>Contact</h4><p>Campus El Manar, Tunis</p><p>donarise@gmail.com</p>
-            <div className="social"><a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a><a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook"></i></a></div>
+            <div className="social">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+            </div>
           </div>
         </div>
         <div className="footer-bottom"><p>© 2025 Donarise. Tous droits réservés.</p></div>
       </footer>
-    </div>
+
+     
+    {showDonation && <DonationModal onClose={() => setShowDonation(false)} />}
+
+    </div> // fin div.app
   );
 };
 
