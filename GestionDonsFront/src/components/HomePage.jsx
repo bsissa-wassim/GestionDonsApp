@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css";
 
-const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
+const HomePage = ({ onSignIn, onSignUp, user, onLogout, onNavigateToDonorDashboard, onNavigateToAdminDashboard }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [counters, setCounters] = useState({ donations: 0, families: 0, volunteers: 0 });
   const [countersStarted, setCountersStarted] = useState(false);
-  
+
   const slideCount = 3;
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
     const duration = 2000;
     const steps = 50;
     let step = 0;
-    
+
     const timer = setInterval(() => {
       step++;
       const progress = 1 - Math.pow(1 - step / steps, 3);
@@ -77,6 +77,10 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout }) => {
           <a href="#impact">Impact</a>
         </nav>
         <div className="nav-actions">
+          {/* TEMP: Buttons visible for testing */}
+          <button className="btn-outline" onClick={onNavigateToDonorDashboard}>Mes Dons</button>
+          <button className="btn-outline" onClick={onNavigateToAdminDashboard}>Espace Admin</button>
+
           {user ? (
             <>
               <span className="user-name">Bonjour, {user.user_metadata?.first_name || user.email.split('@')[0]}</span>

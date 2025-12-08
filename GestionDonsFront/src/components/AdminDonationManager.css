@@ -1,0 +1,173 @@
+/* AdminDonationManager.css */
+.admin-manager {
+    padding: 100px 40px;
+    animation: fadeIn 0.3s ease-in;
+    font-family: 'Inter', sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: var(--bg);
+}
+
+.btn-back-admin {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 0;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+}
+
+.btn-back-admin:hover {
+    color: var(--primary);
+}
+
+.manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.manager-header h2 {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--primary);
+}
+
+.manager-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.donation-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.object-details {
+    display: flex;
+    align-items: flex-start;
+}
+
+.object-details p {
+    margin-bottom: 8px;
+    color: var(--text-light);
+}
+
+.object-details strong {
+    color: var(--text);
+}
+
+.transport-status {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.action-area {
+    margin-top: 25px;
+    background: var(--bg-alt);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.btn-validate {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s;
+}
+
+.btn-validate:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+}
+
+.assign-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.assign-box label {
+    font-weight: 500;
+    color: var(--text);
+}
+
+.assign-box select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: var(--white);
+    font-family: inherit;
+}
+
+.btn-assign {
+    padding: 12px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-assign:hover {
+    background-color: #444;
+    transform: translateY(-2px);
+}
+
+.success-msg {
+    margin-top: 15px;
+    color: #155724;
+    background-color: #d4edda;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+}

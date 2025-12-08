@@ -3,6 +3,8 @@ import { supabase } from './lib/supabase'
 import HomePage from './components/HomePage'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
+import DonorDashboard from './components/DonorDashboard'
+import AdminDashboard from './components/AdminDashboard'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -45,10 +47,18 @@ function App() {
     setCurrentPage('home')
   }
 
+  const handleNavigateToDonorDashboard = () => {
+    setCurrentPage('donorDashboard')
+  }
+
+  const handleNavigateToAdminDashboard = () => {
+    setCurrentPage('adminDashboard')
+  }
+
   if (currentPage === 'signin') {
     return (
-      <SignIn 
-        onBack={handleBack} 
+      <SignIn
+        onBack={handleBack}
         onSwitchToSignUp={() => setCurrentPage('signup')}
         onLoginSuccess={handleLoginSuccess}
       />
@@ -57,19 +67,39 @@ function App() {
 
   if (currentPage === 'signup') {
     return (
-      <SignUp 
-        onBack={handleBack} 
-        onSwitchToSignIn={() => setCurrentPage('signin')} 
+      <SignUp
+        onBack={handleBack}
+        onSwitchToSignIn={() => setCurrentPage('signin')}
+      />
+    )
+  }
+
+  if (currentPage === 'donorDashboard') {
+    return (
+      <DonorDashboard
+        user={user}
+        onBack={handleBack}
+      />
+    )
+  }
+
+  if (currentPage === 'adminDashboard') {
+    return (
+      <AdminDashboard
+        user={user}
+        onBack={handleBack}
       />
     )
   }
 
   return (
-    <HomePage 
-      onSignIn={handleSignIn} 
+    <HomePage
+      onSignIn={handleSignIn}
       onSignUp={handleSignUp}
       user={user}
       onLogout={handleLogout}
+      onNavigateToDonorDashboard={handleNavigateToDonorDashboard}
+      onNavigateToAdminDashboard={handleNavigateToAdminDashboard}
     />
   )
 }
