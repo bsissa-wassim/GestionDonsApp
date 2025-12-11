@@ -19,7 +19,7 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       setMessage({ type: "error", text: "Les mots de passe ne correspondent pas" });
       return;
@@ -58,6 +58,7 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
             roles: ['user']
           });
 
+
         if (profileError) {
           console.error("Profile error:", profileError);
           setMessage({ type: "error", text: "Erreur lors de la création du profil: " + profileError.message });
@@ -83,13 +84,13 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
           <img src="/logo - Copy.png" alt="Donarise" />
         </div>
         <h1 className="auth-title">Créer un compte</h1>
-        
+
         {message.text && (
           <div className={`auth-message ${message.type}`}>
             {message.text}
           </div>
         )}
-        
+
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
@@ -104,7 +105,7 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
                 required
               />
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="lastName">Nom</label>
               <input
@@ -131,7 +132,7 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
               required
             />
           </div>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="password">Mot de passe</label>
@@ -164,12 +165,12 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
             <input type="checkbox" required />
             <span>J'accepte les <a href="#">conditions</a></span>
           </label>
-          
+
           <button type="submit" className="auth-btn" disabled={loading}>
             {loading ? "Inscription..." : "S'inscrire"}
           </button>
         </form>
-        
+
         <div className="auth-divider">
           <span>ou</span>
         </div>
@@ -182,7 +183,7 @@ const SignUp = ({ onBack, onSwitchToSignIn }) => {
             <i className="fab fa-facebook-f"></i>
           </button>
         </div>
-        
+
         <p className="auth-switch">
           Déjà un compte ?{" "}
           <button className="auth-link" onClick={onSwitchToSignIn}>Se connecter</button>

@@ -52,14 +52,14 @@ const AdminDonationManager = ({ donation, onBack, onUpdateStatus }) => {
 
             <div className="manager-grid">
                 <div className="card donor-info">
-                    <h3>👤 Donateur</h3>
+                    <h3>Donateur</h3>
                     <p><strong>Nom:</strong> {donation.donor_name || 'Anonyme'}</p>
                     <p><strong>Contact:</strong> {donation.donor_contact || 'Non renseigné'}</p>
                     <p><strong>Email:</strong> {donation.donor_email || 'email@example.com'}</p>
                 </div>
 
                 <div className="card object-info">
-                    <h3>📦 Objet</h3>
+                    <h3>Objet</h3>
                     <div className="object-details">
                         {donation.image && <img src={donation.image} alt={donation.name} className="donation-img" />}
                         <div>
@@ -71,7 +71,7 @@ const AdminDonationManager = ({ donation, onBack, onUpdateStatus }) => {
                 </div>
 
                 <div className="card logistics-info">
-                    <h3>🚚 Logistique & Transport</h3>
+                    <h3>Logistique & Transport</h3>
                     <p><strong>Méthode choisie:</strong> {donation.transport_method === 'depot' ? 'Je dépose moi-même' : 'Transporteur'}</p>
                     <p><strong>Statut actuel:</strong> <span className="transport-status">{donation.transport_status || 'En attente'}</span></p>
 
@@ -85,7 +85,7 @@ const AdminDonationManager = ({ donation, onBack, onUpdateStatus }) => {
                                         onClick={handleValidateDropoff}
                                         disabled={loading}
                                     >
-                                        {loading ? 'Validation...' : '✅ Valider "Don déposé"'}
+                                        {loading ? 'Validation...' : 'Valider "Don déposé"'}
                                     </button>
                                 ) : (
                                     <div className="success-msg">Le don a été déposé.</div>

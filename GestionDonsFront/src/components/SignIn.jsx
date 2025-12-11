@@ -52,13 +52,13 @@ const SignIn = ({ onBack, onSwitchToSignUp, onLoginSuccess }) => {
         </div>
         <h1 className="auth-title">Connexion</h1>
         <p className="auth-subtitle">Bienvenue ! Connectez-vous à votre compte.</p>
-        
+
         {message.text && (
           <div className={`auth-message ${message.type}`}>
             {message.text}
           </div>
         )}
-        
+
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -72,7 +72,7 @@ const SignIn = ({ onBack, onSwitchToSignUp, onLoginSuccess }) => {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Mot de passe</label>
             <input
@@ -93,12 +93,12 @@ const SignIn = ({ onBack, onSwitchToSignUp, onLoginSuccess }) => {
             </label>
             <a href="#" className="forgot-password">Mot de passe oublié ?</a>
           </div>
-          
+
           <button type="submit" className="auth-btn" disabled={loading}>
             {loading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
-        
+
         <div className="auth-divider">
           <span>ou</span>
         </div>
@@ -111,7 +111,7 @@ const SignIn = ({ onBack, onSwitchToSignUp, onLoginSuccess }) => {
             <i className="fab fa-facebook-f"></i> Facebook
           </button>
         </div>
-        
+
         <p className="auth-switch">
           Pas encore de compte ?{" "}
           <button className="auth-link" onClick={onSwitchToSignUp}>S'inscrire</button>

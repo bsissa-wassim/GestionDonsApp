@@ -77,9 +77,7 @@ const HomePage = ({ onSignIn, onSignUp, user, onLogout, onNavigateToDonorDashboa
           <a href="#impact">Impact</a>
         </nav>
         <div className="nav-actions">
-          {/* TEMP: Buttons visible for testing */}
-          <button className="btn-outline" onClick={onNavigateToDonorDashboard}>Mes Dons</button>
-          <button className="btn-outline" onClick={onNavigateToAdminDashboard}>Espace Admin</button>
+          {/* Buttons removed as requested - redirection handles this now */}
 
           {user ? (
             <>

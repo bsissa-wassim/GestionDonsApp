@@ -145,3 +145,39 @@
         transform: translateY(0);
     }
 }
+
+/* Menu Buttons */
+.donor-menu {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.btn-menu-action {
+    padding: 2.5rem 3rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    background: linear-gradient(135deg, var(--accent) 0%, #c49660 100%);
+    color: white;
+}
+
+.btn-menu-action:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(212, 165, 116, 0.4);
+}
+
+.btn-donate {
+    background: linear-gradient(135deg, var(--accent) 0%, #c49660 100%);
+}
+
+.btn-history {
+    background: linear-gradient(135deg, var(--accent) 0%, #c49660 100%);
+}

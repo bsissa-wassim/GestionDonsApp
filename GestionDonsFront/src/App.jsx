@@ -36,9 +36,34 @@ function App() {
     setCurrentPage('home')
   }
 
-  const handleLoginSuccess = (user) => {
+  const handleLoginSuccess = async (user) => {
     setUser(user)
-    setCurrentPage('home')
+
+    // Fetch user role from profiles table
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('roles')
+        .eq('id', user.id)
+        .single()
+
+      if (error) {
+        console.error('Error fetching user profile:', error)
+        // Default to donor dashboard if error
+        setCurrentPage('donorDashboard')
+        return
+      }
+
+      // Check if user has admin role
+      if (profile?.roles?.includes('admin')) {
+        setCurrentPage('adminDashboard')
+      } else {
+        setCurrentPage('donorDashboard')
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      setCurrentPage('donorDashboard')
+    }
   }
 
   const handleLogout = async () => {

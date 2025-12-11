@@ -147,6 +147,7 @@
   font-size: 14px;
   transition: all 0.3s;
   background: #fafafa;
+  color: #1a1a1a;
 }
 
 .form-group input:focus {
@@ -337,7 +338,7 @@
     padding: 40px 24px;
     margin: 16px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }

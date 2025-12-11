@@ -33,14 +33,14 @@ const DonationDetail = ({ donation, onClose, role = 'donor' }) => {
 
                 {isRefused && (
                     <div className="detail-section error">
-                        <h3>❌ Motif du refus</h3>
+                        <h3>Motif du refus</h3>
                         <p>{donation.refusal_reason || "Aucune raison spécifiée."}</p>
                     </div>
                 )}
 
                 {isAccepted && !isMoney && (
                     <div className="detail-section success">
-                        <h3>✅ Transport & Logistique</h3>
+                        <h3>Transport & Logistique</h3>
                         <div className="detail-row">
                             <strong>Méthode:</strong> <span>{donation.transport_method}</span>
                         </div>
