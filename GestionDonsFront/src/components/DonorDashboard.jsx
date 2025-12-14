@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import DonationDetail from './DonationDetail';
+import DonationModal from './DonationModal';
 import './DonorDashboard.css';
 
 const DonorDashboard = ({ user, onBack }) => {
@@ -9,12 +10,13 @@ const DonorDashboard = ({ user, onBack }) => {
     const [donations, setDonations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedDonation, setSelectedDonation] = useState(null);
+    const [stats, setStats] = useState({ total: 0, accepted: 0, pending: 0 });
 
     useEffect(() => {
-        if (user && viewMode === 'history') {
+        if (user) {
             fetchDonations();
         }
-    }, [user, viewMode]);
+    }, [user]);
 
     const fetchDonations = async () => {
         const mockData = [
@@ -31,122 +33,193 @@ const DonorDashboard = ({ user, onBack }) => {
                 .eq('donor_id', user.id);
 
             if (error) throw error;
-            // Use real data if available, otherwise use mock data (for testing empty DB)
-            setDonations(data && data.length > 0 ? data : mockData);
+            const donationData = data && data.length > 0 ? data : mockData;
+            setDonations(donationData);
+
+            // Calculate stats
+            setStats({
+                total: donationData.length,
+                accepted: donationData.filter(d => d.status === 'accepté').length,
+                pending: donationData.filter(d => d.status === 'en attente').length
+            });
+
         } catch (error) {
             console.error('Error fetching donations:', error);
-            // Fallback to mock data
             setDonations(mockData);
+            setStats({
+                total: mockData.length,
+                accepted: mockData.filter(d => d.status === 'accepté').length,
+                pending: mockData.filter(d => d.status === 'en attente').length
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    if (viewMode === 'donate') {
-        return (
-            <div className="donor-dashboard">
-                <header className="dashboard-header">
-                    <button onClick={() => setViewMode('menu')} className="btn-back">← Retour</button>
-                    <h1>Faire un don</h1>
-                </header>
-                <div className="dashboard-content">
-                    {/* Placeholder for donation form */}
-                    <div className="donate-placeholder" style={{ textAlign: 'center', padding: '50px' }}>
-                        <p>Formulaire de don à venir ici...</p>
+    const renderStats = () => (
+        <section className="stats-section">
+            <div className="stats-container">
+                <div className="stat-card total">
+                    <div className="stat-icon">
+                        <i className="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <div className="stat-content">
+                        <p className="stat-label">Total Dons</p>
+                        <p className="stat-value">{stats.total}</p>
+                    </div>
+                </div>
+
+                <div className="stat-card accepted">
+                    <div className="stat-icon">
+                        <i className="fas fa-check-circle"></i>
+                    </div>
+                    <div className="stat-content">
+                        <p className="stat-label">Acceptés</p>
+                        <p className="stat-value">{stats.accepted}</p>
+                    </div>
+                </div>
+
+                <div className="stat-card pending">
+                    <div className="stat-icon">
+                        <i className="fas fa-clock"></i>
+                    </div>
+                    <div className="stat-content">
+                        <p className="stat-label">En Attente</p>
+                        <p className="stat-value">{stats.pending}</p>
                     </div>
                 </div>
             </div>
-        );
-    }
+        </section>
+    );
 
-    if (viewMode === 'history') {
-        return (
-            <div className="donor-dashboard">
-                <header className="dashboard-header">
-                    <button onClick={() => setViewMode('menu')} className="btn-back">← Retour</button>
-                    <h1>Mes Dons précédents</h1>
-                </header>
+    const renderContent = () => {
+        if (viewMode === 'donate') {
+            return (
+                <div className="donor-dashboard">
+                    <DonationModal onClose={() => setViewMode('menu')} />
+                </div>
+            );
+        }
 
-                <div className="dashboard-content">
-                    {loading ? (
-                        <p>Chargement...</p>
-                    ) : (
-                        <div className="table-responsive">
-                            <table className="donations-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Type</th>
-                                        <th>Détail</th>
-                                        <th>Date</th>
-                                        <th>Statut</th>
-                                        <th>Action</th>
+        if (viewMode === 'history') {
+            return (
+                <div className="content-wrapper">
+                    <header className="content-header">
+                        <button onClick={() => setViewMode('menu')} className="btn-back">← Retour</button>
+                        <h2>Historique de mes Dons</h2>
+                    </header>
+                    <div className="table-responsive">
+                        <table className="donations-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Détail</th>
+                                    <th>Date</th>
+                                    <th>Statut</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {donations.map((donation) => (
+                                    <tr key={donation.id}>
+                                        <td>#{donation.id}</td>
+                                        <td>{donation.type}</td>
+                                        <td>{donation.type === 'argent' ? `${donation.amount} DT` : donation.name}</td>
+                                        <td>{new Date(donation.date).toLocaleDateString()}</td>
+                                        <td>
+                                            <span className={`status-pill ${donation.status}`}>
+                                                {donation.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button
+                                                className="btn-view"
+                                                onClick={() => setSelectedDonation(donation)}
+                                            >
+                                                Voir détails
+                                            </button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {donations.map((donation) => (
-                                        <tr key={donation.id}>
-                                            <td>#{donation.id}</td>
-                                            <td>{donation.type}</td>
-                                            <td>{donation.type === 'argent' ? `${donation.amount} DT` : donation.name}</td>
-                                            <td>{new Date(donation.date).toLocaleDateString()}</td>
-                                            <td>
-                                                <span className={`status-pill ${donation.status}`}>
-                                                    {donation.status}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    className="btn-view"
-                                                    onClick={() => setSelectedDonation(donation)}
-                                                >
-                                                    Voir détails
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {donations.length === 0 && (
-                                        <tr><td colSpan="6" className="no-data">Aucun don passé trouvé.</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
+                                ))}
+                                {donations.length === 0 && (
+                                    <tr><td colSpan="6" className="no-data">Aucun don trouvé.</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="action-cards-container">
+                <div className="action-card" onClick={() => setViewMode('donate')}>
+                    <div className="action-icon">
+                        <i className="fas fa-gift"></i>
+                    </div>
+                    <h3>Faire un Don</h3>
+                    <p>Proposez un nouvel objet ou faites un don financier.</p>
                 </div>
 
-                {selectedDonation && (
-                    <DonationDetail
-                        donation={selectedDonation}
-                        onClose={() => setSelectedDonation(null)}
-                    />
-                )}
+                <div className="action-card" onClick={() => setViewMode('history')}>
+                    <div className="action-icon">
+                        <i className="fas fa-history"></i>
+                    </div>
+                    <h3>Mes Dons</h3>
+                    <p>Consultez l'historique et le statut de vos dons.</p>
+                </div>
             </div>
         );
+    };
+
+    if (loading) {
+        return (
+            <div className="donor-dashboard">
+                <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        )
     }
 
-    // Default 'menu' view
     return (
         <div className="donor-dashboard">
+            {/* Header */}
             <header className="dashboard-header">
-                <button onClick={onBack} className="btn-back">← Accueil</button>
-                <h1>Mon Espace Donateur</h1>
+                <div className="header-content">
+                    <div className="logo-section">
+                        <img src="/logo - Copy.png" alt="Donarise" className="logo" />
+                        <h1>Espace Donateur</h1>
+                    </div>
+                    <div className="header-right">
+                        <div className="user-info">
+                            <i className="fas fa-user-circle"></i>
+                            <div className="user-details">
+                                <p className="user-name">{user?.user_metadata?.first_name || 'Donateur'}</p>
+                                <p className="user-email">{user?.email}</p>
+                            </div>
+                        </div>
+                        <button onClick={onBack} className="btn-logout-header">
+                            <i className="fas fa-sign-out-alt"></i> Accueil
+                        </button>
+                    </div>
+                </div>
             </header>
 
-            <div className="dashboard-content donor-menu">
-                <button
-                    className="btn-menu-action btn-donate"
-                    onClick={() => setViewMode('donate')}
-                >
-                    Faire un don
-                </button>
+            {renderStats()}
 
-                <button
-                    className="btn-menu-action btn-history"
-                    onClick={() => setViewMode('history')}
-                >
-                    Mes dons
-                </button>
-            </div>
+            <main className="dashboard-main">
+                {renderContent()}
+            </main>
+
+            {selectedDonation && (
+                <DonationDetail
+                    donation={selectedDonation}
+                    onClose={() => setSelectedDonation(null)}
+                />
+            )}
         </div>
     );
 };
