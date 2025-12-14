@@ -80,7 +80,21 @@ ALTER SEQUENCE "public"."beneficiaire_id_seq" OWNER TO "postgres";
 
 ALTER SEQUENCE "public"."beneficiaire_id_seq" OWNED BY "public"."beneficiaire"."id";
 
+-- Dans Supabase → SQL Editor
+CREATE TABLE IF NOT EXISTS public.dons_monetaires (
+  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+  amount numeric(10,2) NOT NULL CHECK (amount > 0),
+  currency text DEFAULT 'EUR',
+  message text,
+  anonymous boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT now()
+);
+-------------------
+ALTER TABLE public.dons_monetaires ENABLE ROW LEVEL SECURITY;
 
+CREATE POLICY "users_own_dons" ON public.dons_monetaires FOR ALL 
+  USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 CREATE TABLE IF NOT EXISTS "public"."don" (
     "id" integer NOT NULL,

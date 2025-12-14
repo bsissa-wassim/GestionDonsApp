@@ -1,27 +1,29 @@
+// src/App.jsx
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabase'
+
 import HomePage from './components/HomePage'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
 import DonorDashboard from './components/DonorDashboard'
 import AdminDashboard from './components/AdminDashboard'
+import DonationModal from './components/DonationModal'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [user, setUser] = useState(null)
+  const [showDonation, setShowDonation] = useState(false) // ÉTAT GLOBAL
 
   useEffect(() => {
-    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
     })
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
 
-    return () => subscription.unsubscribe()
+    return () => listener.subscription.unsubscribe()
   }, [])
 
   const handleSignIn = () => {
@@ -69,7 +71,6 @@ function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     setUser(null)
-    setCurrentPage('home')
   }
 
   const handleNavigateToDonorDashboard = () => {
@@ -118,14 +119,20 @@ function App() {
   }
 
   return (
-    <HomePage
-      onSignIn={handleSignIn}
-      onSignUp={handleSignUp}
-      user={user}
-      onLogout={handleLogout}
-      onNavigateToDonorDashboard={handleNavigateToDonorDashboard}
-      onNavigateToAdminDashboard={handleNavigateToAdminDashboard}
-    />
+    <>
+      <HomePage
+        onSignIn={handleSignIn}
+        onSignUp={handleSignUp}
+        user={user}
+        onLogout={handleLogout}
+        onNavigateToDonorDashboard={handleNavigateToDonorDashboard}
+        onNavigateToAdminDashboard={handleNavigateToAdminDashboard}
+        onDonate={() => setShowDonation(true)}
+      />
+      {showDonation && (
+        <DonationModal onClose={() => setShowDonation(false)} />
+      )}
+    </>
   )
 }
 
