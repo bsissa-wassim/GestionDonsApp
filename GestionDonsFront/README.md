@@ -1,16 +1,58 @@
-# React + Vite
+# GestionDonsFront
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application frontend pour la gestion des dons.
 
-Currently, two official plugins are available:
+## Prérequis
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Docker](https://www.docker.com/) installé sur votre machine.
+- Un projet [Supabase](https://supabase.com/) actif.
 
-## React Compiler
+## Configuration
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Avant de lancer l'application, vous devez configurer les variables d'environnement pour connecter l'application à votre propre base de données Supabase.
 
-## Expanding the ESLint configuration
+1.  À la racine du projet `GestionDonsFront`, dupliquez le fichier d'exemple pour créer votre fichier de configuration :
+    ```bash
+    cp .env.example .env
+    ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2.  Ouvrez le fichier `.env` et remplacez les valeurs par vos propres identifiants Supabase :
+    - `VITE_SUPABASE_URL` : L'URL de votre projet Supabase (trouvable dans **Settings > API**).
+    - `VITE_SUPABASE_ANON_KEY` : La clé publique `anon` / `public` de votre projet (trouvable dans **Settings > API**).
+
+    > **Important** : Il est impératif d'utiliser vos propres clés API Supabase pour que l'application se connecte à votre base de données et non à celle de démonstration.
+
+## Exécution avec Docker
+
+Suivez ces étapes pour construire et lancer l'application via Docker.
+
+### 1. Construire l'image
+
+Assurez-vous d'être dans le dossier `GestionDonsFront` et que votre fichier `.env` est bien configuré. Lancez ensuite :
+
+```bash
+docker build -t gestion-dons-front .
+```
+
+*Note : Vite intègre les variables d'environnement (commençant par `VITE_`) directement dans le code compilé lors du build. C'est pourquoi le fichier `.env` doit être présent à cette étape.*
+
+### 2. Lancer le conteneur
+
+Une fois l'image construite, démarrez le conteneur sur le port 8080 (ou un autre port de votre choix) :
+
+```bash
+docker run -d -p 8080:80 --name mon-front gestion-dons-front
+```
+
+L'application sera accessible à l'adresse **[http://localhost:8080](http://localhost:8080)**.
+
+## Commandes Utiles
+
+- **Arrêter le conteneur** :
+  ```bash
+  docker stop mon-front
+  ```
+- **Supprimer le conteneur** :
+  ```bash
+  docker rm mon-front
+  ```
